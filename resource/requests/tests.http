@@ -1,0 +1,30 @@
+### Variable für die Basis-URL definieren
+@baseUrl = http://localhost:3001/api
+
+### 1. Login testen
+# Prüft, ob der User 'lennard_b' existiert und gibt seine ID zurück
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "username": "lennard_b",
+  "password": "pass123"
+}
+
+### 2. Neue Transaktion erstellen
+# WICHTIG: Ersetze die 'userId' (hier 1) durch die ID, die du vom Login-Request erhältst.
+POST {{baseUrl}}/transactions
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "sourceAmount": 100.00,
+  "sourceCurrency": "CHF",
+  "targetCurrency": "EUR",
+  "exchangeRate": 1.056
+}
+
+### 3. Alle Transaktionen abrufen
+# Zeigt alle gespeicherten Transaktionen inkl. des Usernames (durch den JOIN)
+GET {{baseUrl}}/transactions
+Accept: application/json

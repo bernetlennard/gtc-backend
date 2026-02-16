@@ -1,11 +1,17 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-require('dotenv').config();
+const path = require('path'); // Pfad-Modul importieren
+
+// Pfad zur .env Datei explizit angeben (eine Ebene höher)
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_PASSWORD geladen:", process.env.DB_PASSWORD ? "JA" : "NEIN (undefined)");
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -15,7 +21,6 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
-// GET: Alle Transaktionen (inkl. User-Login für die Anzeige im Frontend)
 app.get('/api/transactions', async (req, res) => {
     try {
         const sql = `
@@ -30,7 +35,6 @@ app.get('/api/transactions', async (req, res) => {
     }
 });
 
-// POST: Neue Transaktion speichern
 app.post('/api/transactions', async (req, res) => {
     const { userId, sourceAmount, sourceCurrency, targetCurrency, exchangeRate } = req.body;
     try {
@@ -43,7 +47,6 @@ app.post('/api/transactions', async (req, res) => {
     }
 });
 
-// POST: Login (Gibt die ID zurück, damit das Frontend sie für Transaktionen nutzen kann)
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     try {
